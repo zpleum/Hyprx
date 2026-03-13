@@ -11,223 +11,261 @@ from plugins.theme import theme
 from colorama import Fore, Style
 import time
 import sys
-import requests
-from datetime import datetime
 
 prots = ["TCPShield", 'NeoProtect', 'Cloudflare', "craftserve.pl"]
 colorz = theme()
 white = colorz['white']
+reset = '\033[0m'
 yellow = colorz['yellow']
 red = colorz['red']
 green = colorz['green']
+gray = '\033[38;2;120;120;140m'
+dim = '\033[38;2;80;80;100m'
 underline = '\033[4m'
 hide = "\033[?25l"
 show = "\033[?25h"
-reset = '\033[0m'
 
-VERSION = "v0.7"
-
-IP_REGEX = r'^((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)$'
-DOM_REGEX = r'^(?:(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})$'
-
-
-def firstload():
-    return not os.path.exists("banana")
+VERSION = "v1.0"
 
 def ranproxy():
-    try:
-        with open('proxies.txt', 'r') as f:
-            proxies = [line.strip() for line in f if line.strip()]
-        return random.choice(proxies) if proxies else None
-    
-    except Exception:
+    with open('proxies.txt', 'r') as f:
+        proxies = [line.strip() for line in f if line.strip()]
+    if not proxies:
         return None
+    return random.choice(proxies)
 
 def is_protected(host):
-    protections = {
-        "cloudflare": "Cloudflare",
-        "tcpshield": "TCPShield",
-        "craftserve.pl": "craftserve.pl",
-        "neoprotect": "Neoprotect"
-    }
     try:
         url = f"http://{host}"
         response = requests.get(url, timeout=5, allow_redirects=False)
-        content = response.text.lower()
-
-        # check if redirected
+        gangster = response.text.lower()
         if 300 <= response.status_code < 400:
             location = response.headers.get("Location")
             if location:
                 if "tcpshield" in location: return "TCPShield"
                 elif "craftserve.pl" in location: return "craftserve.pl"
                 elif "neoprotect" in location: return "NeoProtect"
-        
-        # check page content
-        for prot, name in protections.items():
-            if prot in content:
-                return name
+        if "cloudflare" in gangster: return "Cloudflare"
+        elif "tcpshield" in gangster: return "TCPShield"
+        elif "craftserve.pl" in gangster: return "craftserve.pl"
+        elif "neoprotect" in gangster: return "NeoProtect"
+        else: return 'Unprotected'
+    except:
+        return 'Unprotected'
 
-        return "Unprotected"
+def firstload():
+    if not os.path.exists("hyprx"):
+        with open("hyprx", "w") as f:
+            f.write('')
+        return True
+    return False
 
-    except Exception as e:
-        return "Unprotected"
-
-def bananac():
+def hyprxc():
     default = {
         "language": "english",
-        "theme": "banana",
+        "theme": "hyprx",
         "server": {
             "port": 23457,
             "randomize_port": False
         }
     }
-
-    # create config if doesn't exist
     if not os.path.exists('config.json'):
         with open('config.json', 'w', encoding='utf-8') as f:
             json.dump(default, f, indent=2)
         return default
 
-    # load config
     with open('config.json', 'r', encoding='utf-8') as f:
         config = json.load(f)
 
     change = False
-
-    # validation for port
     if not isinstance(config['server']['port'], int) or not (1 <= config['server']['port'] <= 65535):
         config["server"]["port"] = default["server"]["port"]
         change = True
-
-    # validation for random port
     if not isinstance(config['server']['randomize_port'], bool):
         config["server"]["randomize_port"] = default["server"]["randomize_port"]
         change = True
-
-    # validation for languages
     valid_languages = {'jordanian', 'english', 'persian'}
-    lang = config['language']
-    if lang not in valid_languages:
+    if config['language'] not in valid_languages:
         config["language"] = default["language"]
         change = True
-
-    # save if values changed
-    if change: 
+    if change:
         with open('config.json', 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2)
-
     return config
 
 def getstring(key):
-    # load config
     with open('config.json', 'r', encoding='utf-8') as f:
         config = json.load(f)
-
-    # get language from config | default to english
-    lang = config.get("language", "english")
-
+    lang = config['language']
     try:
-        # load translation for language
         with open(f"./translations/{lang}.json", 'r', encoding='utf-8') as f:
             strings = json.load(f)
-
     except FileNotFoundError:
-        # fallback to english if language doesnt exist
         with open("./translations/english.json", 'r', encoding='utf-8') as f:
             strings = json.load(f)
-
-    # return string for key if missing
     return strings.get(key, f"[Missing string for '{key}']")
 
 def animate():
+    print("\033c", end="")
+    tw = os.get_terminal_size().columns
     art = [
-        "\n                  ___",
-        r"                 / _ )___ ____  ___ ____  ___ _",
-        r"                / _  / _ `/ _ \/ _ `/ _ \/ _ `/",
-        r"               /____/\_,_/_//_/\_,_/_//_/\_,_/ "
+        "██╗  ██╗ ██╗   ██╗ ██████╗  ██████╗  ██╗  ██╗",
+        "██║  ██║ ╚██╗ ██╔╝ ██╔══██╗ ██╔══██╗ ╚██╗██╔╝",
+        "███████║  ╚████╔╝  ██████╔╝ ██████╔╝  ╚███╔╝  ",
+        "██╔══██║   ╚██╔╝   ██╔═══╝  ██╔══██╗  ██╔██╗  ",
+        "██║  ██║    ██║    ██║      ██║  ██║  ██╔╝██╗ ",
+        "╚═╝  ╚═╝    ╚═╝    ╚═╝      ╚═╝  ╚═╝  ╚═╝  ╚═╝",
     ]
 
-    w = max(len(line) for line in art)
-    shine = 5
-    delay = 0.008
+    art_w = max(len(l) for l in art)
+    pad_left = (tw - art_w) // 2
+    pad = ' ' * pad_left
+    shine = 8
+    delay = 0.006
 
     print(hide, end="")
     try:
-        for p in range(-shine, w + shine):
+        for p in range(-shine, art_w + shine):
             print("\033[H", end="")
+            print()
             for line in art:
-                s = ""
+                s = pad
                 for i, c in enumerate(line):
-                    s += white + c if p <= i < p + shine else yellow + c
+                    dist = abs(i - p)
+                    if dist == 0:
+                        s += '\033[38;2;255;255;255m' + c
+                    elif dist <= 2:
+                        s += '\033[38;2;180;220;255m' + c
+                    elif dist <= shine:
+                        s += yellow + c
+                    else:
+                        s += dim + c
                 print(s + reset)
+            print()
             time.sleep(delay)
     finally:
         print(show, end="")
-    
-def scrapeproxy(ptype):
-    proxies = []
 
-    # validate proxy type
+def loadmenu():
+    print("\033c", end="")
+    tw = os.get_terminal_size().columns
+    art = [
+        "██╗  ██╗ ██╗   ██╗ ██████╗  ██████╗  ██╗  ██╗",
+        "██║  ██║ ╚██╗ ██╔╝ ██╔══██╗ ██╔══██╗ ╚██╗██╔╝",
+        "███████║  ╚████╔╝  ██████╔╝ ██████╔╝  ╚███╔╝  ",
+        "██╔══██║   ╚██╔╝   ██╔═══╝  ██╔══██╗  ██╔██╗  ",
+        "██║  ██║    ██║    ██║      ██║  ██║  ██╔╝██╗ ",
+        "╚═╝  ╚═╝    ╚═╝    ╚═╝      ╚═╝  ╚═╝  ╚═╝  ╚═╝",
+    ]
+    art_w = max(len(l) for l in art)
+    pad = ' ' * ((tw - art_w) // 2)
+    print()
+    for line in art:
+        print(f"{pad}{yellow}{line}{reset}")
+    print()
+
+from datetime import datetime
+
+def repostuff():
+    repo = "https://api.github.com/repos/zPleum/Hyprx"
+    data = requests.get(repo).json()
+    stars = data.get("stargazers_count", 0)
+    updated = data.get("updated_at")
+    return stars, updated, VERSION
+
+def stats(stars, updated, version):
+    if updated:
+        updated = datetime.strptime(updated, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %b %Y")
+    else:
+        updated = "N/A"
+
+    user = os.getlogin()
+    tw = os.get_terminal_size().columns
+
+    rows = [
+        ("stars  ", str(stars)),
+        ("updated", updated),
+        ("user   ", user),
+    ]
+
+    title_text = f"  Hyprx {version}"
+    max_row = max(len(f"  {l}  {v}") for l, v in rows)
+    W = max(len(title_text), max_row) + 60
+
+    pad_left = ' ' * ((tw - W - 2) // 2)
+
+    def row(label, value):
+        inner = f"  {label}  {value}"
+        pad = W - len(inner)
+        return f"{pad_left}{dim}│{gray}  {label}  {white}{value}{' ' * pad}{dim}│{reset}"
+
+    top   = f"{pad_left}{dim}╭{'─' * W}╮{reset}"
+    title = f"{pad_left}{dim}│{yellow}  Hyprx {white}{version}{' ' * (W - len(title_text))}{dim}│{reset}"
+    sep   = f"{pad_left}{dim}├{'─' * W}┤{reset}"
+    bot   = f"{pad_left}{dim}╰{'─' * W}╯{reset}"
+
+    print()
+    print(top)
+    print(title)
+    print(sep)
+    for label, value in rows:
+        print(row(label, value))
+    print(bot)
+    print()
+
+def initialize():
+    if firstload() == True:
+        print("\033c", end="")
+        print(rf'''
+{yellow}
+  ██╗  ██╗██╗   ██╗██████╗ ██████╗ ██╗  ██╗
+  ██║  ██║╚██╗ ██╔╝██╔══██╗██╔══██╗╚██╗██╔╝
+  ███████║ ╚████╔╝ ██████╔╝██████╔╝ ╚███╔╝ 
+  ██╔══██║  ╚██╔╝  ██╔═══╝ ██╔══██╗ ██╔██╗ 
+  ██║  ██║   ██║   ██║     ██║  ██║██╔╝ ██╗
+  ╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝
+{reset}
+  {gray}welcome, {white}{os.getlogin()}{gray}.
+  {getstring('initmsg')}{reset}
+''')
+        node()
+        velocity()
+        animate()
+        loadmenu()
+
+    elif firstload() == False:
+        animate()
+        loadmenu()
+
+def scrapeproxy(ptype):
     if ptype.lower() not in ['socks5', 'socks4']:
         logging.error('Please enter a valid proxy type (socks5, socks4)')
         return
-    
+    proxies = []
     try:
-        # fetch proxy sites
         response = requests.get(f'https://raw.githubusercontent.com/RattlesHyper/proxy/main/{ptype}', timeout=5)
-
         for site in response.text.splitlines():
             r = requests.get(site)
-            # add every proxy to "proxies" list
             for proxy in r.text.splitlines():
                 proxies.append(f'{ptype}://{proxy}')
-
-        # log numbers of proxies found
         logging.info(f'Fetched {len(proxies)} {ptype} proxies')
         return proxies
-    
     except Exception as e:
         logging.error(e)
         return
 
-def loadmenu():
-    print("\033c", end="")
-    print(rf'''{yellow}
-                  ___                          
-                 / _ )___ ____  ___ ____  ___ _        
-                / _  / _ `/ _ \/ _ `/ _ \/ _ `/        
-               /____/\_,_/_//_/\_,_/_//_/\_,_/ {white} 
-''')
-
-
-def repostuff():
-    repo = "https://api.github.com/repos/x3fication/Banana"
-    r = requests.get(repo).json()
-    stars = r["stargazers_count"]
-    updated = r["updated_at"]
-    return stars, updated, VERSION
-
-def stats(stars, updated, version, width=60):
-    if updated:
-        updated = datetime.strptime(updated, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S UTC")
-    else:
-        updated = "N/A"
-
-    def pad(line):
-        visible = re.compile(r'\033\[[0-9;]*m').sub('', line)
-        return f"{line}{' ' * (width - len(visible) - 1)}{gray}]"
-
-    print(pad(f"       {gray}*[ {yellow}banana {version}{gray}"))
-    print(pad(f"+ -- --=[ {white}Stars: {stars}"))
-    print(pad(f"{gray}+ -- --=[ {white}Last Updated: {updated}") + '\n')
-
-
 def checkserver(server):
-    server = server.split(':')[0]
+    if ':' in server:
+        server = server.split(':')[0]
     if server == 'localhost': return True
-    return bool(re.match(DOM_REGEX,server) or re.match(IP_REGEX, server))
-
+    ipre = r'^((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)$'
+    domre = r'^(?:(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})$'
+    if re.match(domre, server) or re.match(ipre, server):
+        return True
+    return False
 
 def checkip(ip):
-    return bool(re.match(IP_REGEX, ip) or '*' in ip)
+    ipre = r'^((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)\.((25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)|\*)$'
+    if re.match(ipre, ip): return True
+    if '*' in ip: return True
+    return False

@@ -1,0 +1,2 @@
+/register 12345678abc 12345678abc
+/login 12345678abc

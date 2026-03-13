@@ -1,76 +1,85 @@
+# Hyprx 🕹️ - **A free and improved alternative to MCPTool**
+
+This project is based on Banana by x5ten.
+Modifications and improvements were made in Hyprx.
 
 <h1 align="center">
-  <img src="https://files.catbox.moe/nqvuai.png" alt="Header Image" style="width:30%; max-width:600px;"/>
-</h1>
-
-# Banana 🍌
-
-**A free and better alternative to MCPTool**
-
-<h1 align="center">
-  <img src="https://files.catbox.moe/i77zrj.png" alt="Header Image" style="width:80%; max-width:600px;"/>
+  <img src="https://i.postimg.cc/WzVsMTfx/image.png" alt="Header Image" style="width:80%; max-width:600px;"/>
 </h1>
 
 ---
 
-## 📦 Installation
+## 📜 License Notice
 
-### Requirements
+**Hyprx** is a modified version of the original project **Banana**.
 
-* Python 3.10+ (don't forget to add to path)
-* Winget package manager (Windows only)
+- **Original Creator:** x5ten (@x5ten on Discord)
+- **Original Project:** Banana
+- **Original Repository:** [https://github.com/Renovsk/Banana](https://github.com/Renovsk/Banana)
 
-### Setup
+This project continues to be distributed under the **GNU General Public License v3.0**. 
+In accordance with the GPLv3 and the original author's request, this software remains free to use and modify, provided that all derivatives also carry the same license and proper credits.
+
+---
+
+# 📦 Installation
+
+## Requirements
+
+- Python **3.10+**
+- Winget package manager *(Windows only)*
+
+## Setup
 
 ```bash
-git clone https://github.com/Renovsk/Banana.git && cd Banana
+git clone https://github.com/zPleum/Hyprx.git
+cd Hyprx
 pip install -r requirements.txt
-python main.py
-```
+python main.py / Open 'START Hyprx.bat'
+````
 
 ---
 
-## ⚙️ Features
+# ⚙️ Features
 
-### Commands
+## Commands
 
-| Command       | Arguments                                                     | Description                                                     |
-| ------------- | ------------------------------------------------------------- | --------------------------------------------------------------- |
-| `websearch`   | N/A                                                           | Opens the web search utility                                    |
-| `server`      | `<address>`                                                   | Shows information about the server                              |
-| `edit`        | `<key> <value>`                                               | Edits the banana config                                         |
-| `bungeeguard` | `<ip> <bungeeguard_token>`                                    | Makes a BungeeGuard proxy                                       |
-| `uuid`        | `<ign>`                                                       | Shows player's UUID                                             |
-| `ipinfo`      | `<ip>`                                                        | Shows information about the given IP                            |
-| `fetch`       | `<type>`                                                      | Scrapes proxies of a given type                                 |
-| `monitor`     | `<ip>`                                                        | Monitors who leaves and joins a server (requires query support) |
-| `dns`         | `<domain>`                                                    | Shows all DNS records of the domain                             |
-| `target`      | `<domain>`                                                    | Shows all subdomains with their resolved IPs                    |
-| `proxy`       | `<ip> <mode>`                                                 | Starts a Velocity proxy redirecting to the server               |
-| `fakeproxy`   | `<ip> <mode>`                                                 | Starts a Velocity proxy that logs all commands                  |
-| `check`       | `<file>`                                                      | Checks the status of servers listed in a file                   |
-| `mcscan`      | `<ip> <range> <threads>`                                      | Scans a range of ports on a given IP for Minecraft servers      |
-| `scan`        | `<ip> <range> <threads>`                                      | Performs multi-threaded TCP port scan on a given IP             |
-| `clear`       | N/A                                                           | Clears the screen                                               |
-| `ogmur`       | `<users_file> <server> <commands_file> <stay_logged> <proxy>` | Sends a bot to execute commands from a file                     |
-| `update`      | N/A                                                           | Re-initializes Banana                                           |
-| `kick`        | `<username> <server> <proxy>`                                 | Kicks a player from the server (if cracked)                     |
-| `shell`       | `<host> <port> <bind_port>`                                   | Uses netcat to listen on a port                                 |
-| `connect`     | `<username> <server> <proxy>`                                 | Joins with a bot and allows messaging                           |
-| `rcon`        | `<server> <password>`                                         | Connects to a server’s RCON                                     |
-| `brutrcon`    | `<server> <file>`                                             | Tries passwords from file to brute-force RCON                   |
-| `fuzz`        | `<website> <file> <threads>`                                  | URL fuzzing (e.g., `example.com/FUZZ` or `FUZZ.example.com`)    |
-| `sendcmd`     | `<username> <server> <commands_file> <proxy>`                 | Sends a bot that executes commands from a file                  |
-| `exit`        | N/A                                                           | Exits the app                                                   |
+| Command       | Arguments                                                   | Description                                       |
+| ------------- | ----------------------------------------------------------- | ------------------------------------------------- |
+| `websearch`   | N/A                                                         | Crawls Minecraft server lists to discover servers |
+| `server`      | `<address>`                                                 | Shows information about a Minecraft server        |
+| `uuid`        | `<ign>`                                                     | Looks up a player's UUID                          |
+| `edit`        | `<language/theme> <value>`                                  | Edits the Hyprx configuration                     |
+| `ipinfo`      | `<ip>`                                                      | Shows detailed IP information                     |
+| `iphistory`   | `<domain>`                                                  | Retrieves historical IPv4 addresses               |
+| `dns`         | `<domain>`                                                  | Shows all DNS records                             |
+| `target`      | `<domain>`                                                  | Enumerates subdomains and their IPs               |
+| `fetch`       | `<socks4/socks5>`                                           | Scrapes fresh proxies                             |
+| `monitor`     | `<ip>`                                                      | Monitors player joins/leaves (query required)     |
+| `proxy`       | `<ip> <mode>`                                               | Starts a Velocity proxy redirecting traffic       |
+| `fakeproxy`   | `<ip> <mode>`                                               | Starts a proxy that logs commands                 |
+| `bungeeguard` | `<ip> <token>`                                              | Creates a BungeeGuard proxy                       |
+| `check`       | `<file>`                                                    | Checks Minecraft server status from file          |
+| `mcscan`      | `<ip> <range> <threads>`                                    | Scans ports for Minecraft servers                 |
+| `scan`        | `<ip> <range> <threads>`                                    | Multi-threaded TCP port scan                      |
+| `ogmur`       | `<users/random> <server> <commands> <keep> <count> <proxy>` | Sequential bot execution                          |
+| `ogv2`        | `<users/random> <server> <commands> <keep> <count> <proxy>` | Multi-threaded bot execution                      |
+| `connect`     | `<username> <server> <proxy>`                               | Connects a bot and allows messaging               |
+| `sendmsg`     | `<server> <message> <username/all>`                         | Sends chat messages                               |
+| `sendcmd`     | `<username> <server> <commands> <proxy>`                    | Bot executes commands from file                   |
+| `kick`        | `<username> <server> <proxy>`                               | Kicks a player from cracked server                |
+| `rcon`        | `<server> <password>`                                       | Connects to server RCON                           |
+| `brutrcon`    | `<server> <file>`                                           | Brute-force RCON passwords                        |
+| `fuzz`        | `<url> <file> <threads>`                                    | URL / subdomain fuzzing                           |
+| `shell`       | `<host> <port> <bind_port>`                                 | Netcat listener                                   |
+| `tcpflood`    | `<host:port> <threads>`                                     | Floods with TCP connections                       |
+| `udpflood`    | `<host:port> <processes>`                                   | Floods with UDP packets                           |
+| `logflood`    | `<host:port> <coroutines>`                                  | Floods Minecraft login packets                    |
+| `clear`       | N/A                                                         | Clears the terminal                               |
+| `reload`      | N/A                                                         | Restarts Hyprx                                    |
+| `update`      | N/A                                                         | Re-initializes Hyprx                              |
+| `exit`        | N/A                                                         | Exits the application                             |
 
-> More commands coming soon!
+### ⚠️ Disclaimer
 
----
-
-## 👉 Credits
-* Made by `@x5ten` on Discord
-
-You are not allowed to sell banana or any modified versions. If you use any of my code please give me credit.
-
-![gg](https://api.lucabubi.me/chart?username=x3fication&repository=banana&color=yellow)
-![Alt](https://repobeats.axiom.co/api/embed/7e4e4960a018472a371a835b4c2924118d6e3c1c.svg "Repobeats analytics image")
+**This tool is for educational and ethical testing purposes only.** The developer of **Hyprx** is not responsible for any misuse, damage, or illegal activities caused by this software. Use it at your own risk. By using this tool, you agree to comply with your local laws and regulations regarding cybersecurity and network testing.

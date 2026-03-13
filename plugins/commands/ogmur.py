@@ -1,18 +1,34 @@
 from plugins.common import *
 import requests
 import time
+import random
+import os
 
-def ogmur(userfile, server, cmdfile, keep, proxy=None):
+FIRST = ["Alex","Sam","Jordan","Taylor","Morgan","Casey","Riley","Jamie","Drew","Quinn","Avery","Blake","Cameron","Dakota","Emery","Finley","Hayden","Hunter","Kendall","Logan"]
+LAST = ["xD","YT","HD","GG","Pro","PvP","MC","Gaming","Plays","123","2025","007","404","999"]
+
+PROXIES = []
+
+def load_proxies():
+    global PROXIES
+    path = os.path.join(os.path.dirname(__file__), '..', 'default_proxies.txt')
+    if not os.path.exists(path):
+        logging.error('default_proxies.txt not found')
+        return False
+    with open(path, 'r') as f:
+        PROXIES = [line.strip() for line in f if line.strip()]
+    if not PROXIES:
+        logging.error('default_proxies.txt is empty')
+        return False
+    logging.info(f'Loaded {len(PROXIES)} proxies')
+    return True
+
+def random_name():
+    return f"{random.choice(FIRST)}{random.choice(LAST)}{random.randint(0,99)}"
+
+def ogmur(userfile, server, cmdfile, keep, count=1, proxy=None, delay=5):
     try:
-        connected = False
-
-        # validate server
-        if not checkserver(server):
-            logging.error('Please input a real domain or server')
-            return
-
-        # validate keep
-        elif keep not in ['true', 'false']:
+        if keep not in ['true', 'false']:
             logging.error('Please enter a valid value: true/false')
             return
 
@@ -21,67 +37,93 @@ def ogmur(userfile, server, cmdfile, keep, proxy=None):
         else:
             port = 25565
 
-        # read usernames from file
-        with open(userfile, 'r') as users_file:
-            usernames = [line.strip() for line in users_file if line.strip()]
+        if not checkserver(server):
+            logging.error('Please input a real domain or server')
+            return
 
-        # iterate over each username
-        for username in usernames:
+        if proxy == 'auto' and not load_proxies():
+            return
+
+        if userfile.endswith('.txt'):
+            with open(userfile, 'r') as f:
+                usernames = [line.strip() for line in f if line.strip()]
+        else:
+            usernames = [random_name() for _ in range(int(count))]
+
+        for i, username in enumerate(usernames):
+            connected = False
+
+            if proxy == 'auto':
+                current_proxy = PROXIES[i % len(PROXIES)]
+            elif proxy is not None:
+                current_proxy = proxy
+            else:
+                current_proxy = None
+
             payload = {"host": server, "port": port, "username": username}
-            if proxy is not None:
-                payload["proxy"] = ranproxy()
+            if current_proxy is not None:
+                payload["proxy"] = current_proxy
 
-            logging.info(f'Connecting, {username}')
+            logging.info(f'Connecting {username}' + (f' via {current_proxy}' if current_proxy else ''))
+            response = requests.post('http://localhost:6767/connect', json=payload)
 
-            # attempt connection
-            response = requests.post('http://localhost:6969/connect', json=payload)
+            if response.status_code != 200 and response.status_code != 400:
+                logging.error(f'Failed to connect [{response.status_code}]')
+                return
 
-            if response.status_code not in [200, 400]:
-                return logging.error(f'Failed to connect [{response.status_code}]')
-
-            # wait for connection
-            for i in range(10):
-                r = requests.get('http://localhost:6969/status').json()[f"{server}:{port}"][username]['connected']
-                if r:
-                    connected = True
-                    break
+            for _ in range(15):
+                try:
+                    status = requests.get('http://localhost:6767/status').json()
+                    key = server + ':' + str(port)
+                    if key in status and username in status[key]:
+                        if status[key][username]['connected']:
+                            connected = True
+                            break
+                except:
+                    pass
                 logging.info('Waiting for connection...')
                 time.sleep(2)
 
+            if not connected:
+                logging.error(f'Failed to connect {username} (timeout)')
+                continue
+
             logging.success(f'Connected {username}')
 
-            # read commands from file
+            time.sleep(3)
             with open(cmdfile, 'r') as commands_file:
                 commands = [line.strip() for line in commands_file if line.strip()]
 
-            # send commands
-            if connected:
-                for command in commands:
-                    r = requests.post('http://localhost:6969/send', json={
-                        "host": server,
-                        "port": port,
-                        "username": username,
-                        "message": command
-                    })
-                    if r.status_code != 200:
-                        logging.error(f'Failed to send message. (BOT LIKELY DISCONNECTED) {r.status_code}')
-                        return
+            for command in commands:
+                r = requests.post('http://localhost:6767/send', json={
+                    "host": server,
+                    "port": port,
+                    "username": username,
+                    "message": command
+                })
+                if r.status_code != 200:
+                    logging.error(f'Failed to send message. (BOT LIKELY DISCONNECTED) {r.status_code}')
+                    break
 
-                    logging.success(f'Sent: {command}')
-                    time.sleep(0.5)
+                logging.success(f'Sent: {command}')
+                time.sleep(0.5)
 
-                logging.success(f'All commands have been sent for {username}')
+            logging.success(f'All commands have been sent for {username}')
 
-                # disconnect if keep is false
-                if keep == 'false':
-                    requests.post('http://localhost:6969/disconnect', json={
-                        "host": server,
-                        "port": port,
-                        "username": username
-                    })
-                    logging.success(f'{username} has been disconnected')
+            if keep == 'false':
+                requests.post('http://localhost:6767/disconnect', json={
+                    "host": server,
+                    "port": port,
+                    "username": username
+                })
+                logging.success(f'{username} has been disconnected')
 
-                time.sleep(3)
+            if i < len(usernames) - 1:
+                logging.info(f'Waiting {delay}s before next bot...')
+                time.sleep(delay)
 
+    except KeyboardInterrupt:
+        logging.info('Interrupted')
+        return
     except Exception as e:
         logging.error(e)

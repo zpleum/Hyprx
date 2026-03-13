@@ -5,48 +5,86 @@ import string
 def bungee(ip, forwarding):
     try:
         p = "./proxy/velocity"
-
-        # save forwarding secret
-        os.makedirs(p, exist_ok=True)
         with open(f"{p}/forwarding.secret", "w") as f:
             f.write(forwarding)
+        if not checkserver(ip): logging.error('Please input a real domain or server'); return
+        port = hyprxc()['server']['port'] if not hyprxc()['server']['randomize_port'] else random.randint(20000, 30000)
+        if not os.path.exists(p): os.makedirs(p)
 
-        # validate server
-        if not checkserver(ip):
-            logging.error("Please input a real domain or server")
-            return
+        config = f"""
+# Config version. Do not change this
+config-version = "2.7"
 
-        # get port
-        cfg = bananac()
-        port = cfg["server"]["port"]
-        if cfg["server"]["randomize_port"]:
-            port = random.randint(20000, 30000)
+bind = "0.0.0.0:{port}"
 
-        # load config template
-        template = "./plugins/files/config.txt"
-        if not os.path.isfile(template):
-            logging.error(f"Config not find template: {template}")
-            return
+motd = "<#09add3>A Velocity Server"
 
-        with open(template, "r") as f:
-            config = f.read()
+show-max-players = 500
 
-        # replace placeholders
-        config = config.replace("PORT_HERE", str(port))
-        config = config.replace("IP_HERE", ip)
-        config = config.replace("FORWARDING_MODE", "bungeeguard")
+online-mode = false
 
-        # write final config
+force-key-authentication = true
+
+prevent-client-proxy-connections = false
+
+player-info-forwarding-mode = "bungeeguard"
+
+forwarding-secret-file = "forwarding.secret"
+
+announce-forge = false
+
+kick-existing-players = false
+
+ping-passthrough = "DISABLED"
+
+sample-players-in-ping = false
+
+enable-player-address-logging = true
+
+[servers]
+default = "{ip}"
+try = [ "default" ]
+
+[forced-hosts]
+"example.com" = [ "default" ]
+
+[advanced]
+compression-threshold = 256
+compression-level = -1
+login-ratelimit = 0
+connection-timeout = 5000
+read-timeout = 30000
+haproxy-protocol = false
+tcp-fast-open = false
+bungee-plugin-message-channel = true
+show-ping-requests = false
+failover-on-unexpected-server-disconnect = true
+announce-proxy-commands = true
+log-command-executions = false
+log-player-connections = true
+accepts-transfers = false
+enable-reuse-port = false
+command-rate-limit = 50
+forward-commands-if-rate-limited = true
+kick-after-rate-limited-commands = 0
+tab-complete-rate-limit = 10
+kick-after-rate-limited-tab-completes = 0
+
+[query]
+enabled = false
+port = {port}
+map = "Velocity"
+show-plugins = false
+"""
+
         with open(f"{p}/velocity.toml", "w") as f:
             f.write(config)
 
-        # check for velocity.jar
         if not os.path.isfile(f"{p}/velocity.jar"):
             logging.error(f"Could not find velocity.jar in {p}")
             return
 
-        logging.info(f"Bungeeguard proxy started on 0.0.0.0:{port}")
+        logging.info(f'Bungeeguard proxy started on 0.0.0.0:{port}')
         subprocess.run(["java", "-jar", "velocity.jar"], cwd=p)
 
-    except KeyboardInterrupt:
-        pass
+    except KeyboardInterrupt: pass
