@@ -42,6 +42,34 @@ python main.py / Open 'START Hyprx.bat'
 
 # ⚙️ Features
 
+## 📖 Categories
+
+```
+RECON / OSINT
+  geoip · ipinfo · iphistory · whois · dns · target
+  reverseip · uuid · server · mcstatus · playerlist · websearch
+
+ATTACK / FLOOD
+  tcpflood · udpflood · synflood · logflood · slowloris · httpflood
+
+BOT
+  ogmur · ogv2 · connect · botchat · botspam · botdisconnect · kick
+
+NETWORK
+  ping · traceroute · scan · mcscan · bungeecheck · crackcheck
+
+PROXY
+  proxy · fakeproxy · bungeeguard · proxycheck · proxyscrape · fetch
+
+EXPLOIT
+  rcon · brutrcon · ptero · fuzz · shell
+
+UTILITY
+  b64 · hash · crack · edit · check · monitor · clear · reload · update · exit
+```
+
+---
+
 ## Commands
 
 | Command         | Arguments                                                                       | Description                                                       |
