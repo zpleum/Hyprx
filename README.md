@@ -4,7 +4,7 @@ This project is based on Banana by x5ten.
 Modifications and improvements were made in Hyprx.
 
 <h1 align="center">
-  <img src="https://i.postimg.cc/WzVsMTfx/image.png" alt="Header Image" style="width:80%; max-width:600px;"/>
+  <img src="https://i.postimg.cc/dtSM3ZhJ/image.png" alt="Header Image" style="width:80%; max-width:600px;"/>
 </h1>
 
 <p align="center">
