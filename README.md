@@ -1,4 +1,4 @@
-# Hyprx - **A free and improved alternative to MCPTool**
+# Hyprx 🕹️ - **A free and improved alternative to MCPTool**
 
 This project is based on Banana by x5ten.
 Modifications and improvements were made in Hyprx.
