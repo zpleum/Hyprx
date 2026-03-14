@@ -13,3 +13,4 @@ bcrypt
 beautifulsoup4
 pywin32
 aiohttp
+pypresence

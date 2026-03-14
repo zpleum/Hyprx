@@ -26,8 +26,11 @@ def load_proxies():
 def random_name():
     return f"{random.choice(FIRST)}{random.choice(LAST)}{random.randint(0,99)}"
 
-def ogmur(userfile, server, cmdfile, keep, count=1, proxy=None, delay=5, version='1.21.4'):
+def ogmur(userfile, server, cmdfile, keep, count=1, proxy=None, delay=5, version='1.21.8'):
     try:
+        delay = float(delay)
+        count = int(count)
+
         if keep not in ['true', 'false']:
             logging.error('Please enter a valid value: true/false')
             return
@@ -41,18 +44,60 @@ def ogmur(userfile, server, cmdfile, keep, count=1, proxy=None, delay=5, version
             logging.error('Please input a real domain or server')
             return
 
-        if proxy == 'auto' and not load_proxies():
+        if proxy in ['none', 'null', '-', '']:
+            proxy = None
+
+        if proxy and proxy.endswith('.txt'):
+            path = proxy
+            if not os.path.exists(path):
+                logging.error(f'Proxy file not found: {path}')
+                return
+            with open(path, 'r') as f:
+                PROXIES[:] = [line.strip() for line in f if line.strip()]
+            if not PROXIES:
+                logging.error(f'Proxy file is empty: {path}')
+                return
+            logging.info(f'Loaded {len(PROXIES)} proxies from {path}')
+            proxy = 'auto'
+
+        if proxy == 'auto' and not PROXIES and not load_proxies():
             return
 
         if userfile.endswith('.txt'):
             with open(userfile, 'r') as f:
                 usernames = [line.strip() for line in f if line.strip()]
         else:
-            usernames = [random_name() for _ in range(int(count))]
+            usernames = [random_name() for _ in range(count)]
+
+        def wait_connected(username, timeout=60):
+            for _ in range(timeout // 2):
+                try:
+                    status = requests.get('http://localhost:6767/status').json()
+                    key = server + ':' + str(port)
+                    if key in status and username in status[key]:
+                        if status[key][username]['connected']:
+                            return True
+                except:
+                    pass
+                time.sleep(2)
+            return False
+
+        def send_commands(username):
+            with open(cmdfile, 'r') as f:
+                commands = [line.strip() for line in f if line.strip()]
+            for command in commands:
+                r = requests.post('http://localhost:6767/send', json={
+                    "host": server, "port": port,
+                    "username": username, "message": command
+                })
+                if r.status_code != 200:
+                    logging.error(f'Failed to send [{username}] — bot likely disconnected')
+                    return False
+                logging.success(f'Sent: {command}')
+                time.sleep(0.5)
+            return True
 
         for i, username in enumerate(usernames):
-            connected = False
-
             if proxy == 'auto':
                 current_proxy = PROXIES[i % len(PROXIES)]
             elif proxy is not None:
@@ -69,54 +114,39 @@ def ogmur(userfile, server, cmdfile, keep, count=1, proxy=None, delay=5, version
 
             if response.status_code != 200 and response.status_code != 400:
                 logging.error(f'Failed to connect [{response.status_code}]')
-                return
+                continue
 
-            for _ in range(15):
-                try:
-                    status = requests.get('http://localhost:6767/status').json()
-                    key = server + ':' + str(port)
-                    if key in status and username in status[key]:
-                        if status[key][username]['connected']:
-                            connected = True
-                            break
-                except:
-                    pass
-                logging.info('Waiting for connection...')
-                time.sleep(2)
-
-            if not connected:
+            if not wait_connected(username, 60):
                 logging.error(f'Failed to connect {username} (timeout)')
                 continue
 
             logging.success(f'Connected {username}')
-
             time.sleep(3)
-            with open(cmdfile, 'r') as commands_file:
-                commands = [line.strip() for line in commands_file if line.strip()]
 
-            for command in commands:
-                r = requests.post('http://localhost:6767/send', json={
-                    "host": server,
-                    "port": port,
-                    "username": username,
-                    "message": command
-                })
-                if r.status_code != 200:
-                    logging.error(f'Failed to send message. (BOT LIKELY DISCONNECTED) {r.status_code}')
+            max_attempts = 4
+            for attempt in range(max_attempts):
+                ok = send_commands(username)
+                if ok:
+                    logging.success(f'All commands sent for {username}')
                     break
-
-                logging.success(f'Sent: {command}')
-                time.sleep(0.5)
-
-            logging.success(f'All commands have been sent for {username}')
+                else:
+                    if attempt < max_attempts - 1:
+                        logging.info(f'[{username}] Waiting for rejoin... ({attempt+1}/{max_attempts-1})')
+                        time.sleep(5)
+                        if wait_connected(username, 60):
+                            logging.success(f'[{username}] Rejoined — retrying commands')
+                            time.sleep(3)
+                        else:
+                            logging.error(f'[{username}] Rejoin timeout')
+                            break
+                    else:
+                        logging.error(f'[{username}] Max cmd attempts reached')
 
             if keep == 'false':
                 requests.post('http://localhost:6767/disconnect', json={
-                    "host": server,
-                    "port": port,
-                    "username": username
+                    "host": server, "port": port, "username": username
                 })
-                logging.success(f'{username} has been disconnected')
+                logging.success(f'{username} disconnected')
 
             if i < len(usernames) - 1:
                 logging.info(f'Waiting {delay}s before next bot...')

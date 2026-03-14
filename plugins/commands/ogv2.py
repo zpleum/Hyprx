@@ -29,8 +29,6 @@ def random_name():
 
 def handle_bot(username, server, port, cmdfile, keep, current_proxy, version):
     try:
-        connected = False
-
         payload = {"host": server, "port": port, "username": username, "version": version}
         if current_proxy is not None:
             payload["proxy"] = current_proxy
@@ -42,39 +40,58 @@ def handle_bot(username, server, port, cmdfile, keep, current_proxy, version):
             logging.error(f'Failed to connect {username} [{response.status_code}]')
             return
 
-        for i in range(10):
-            try:
-                status = requests.get('http://localhost:6767/status').json()
-                key = server + ':' + str(port)
-                if key in status and username in status[key]:
-                    if status[key][username]['connected']:
-                        connected = True
-                        break
-            except:
-                pass
-            time.sleep(2)
+        def wait_connected(timeout=60):
+            for _ in range(timeout // 2):
+                try:
+                    status = requests.get('http://localhost:6767/status').json()
+                    key = server + ':' + str(port)
+                    if key in status and username in status[key]:
+                        if status[key][username]['connected']:
+                            return True
+                except:
+                    pass
+                time.sleep(2)
+            return False
 
-        if not connected:
+        def send_commands():
+            with open(cmdfile, 'r') as f:
+                commands = [line.strip() for line in f if line.strip()]
+            for command in commands:
+                r = requests.post('http://localhost:6767/send', json={
+                    "host": server, "port": port, "username": username, "message": command
+                })
+                if r.status_code != 200:
+                    logging.error(f'Failed to send [{username}] {r.status_code}')
+                    return False
+                logging.success(f'[{username}] Sent: {command}')
+                time.sleep(0.5)
+            return True
+
+        if not wait_connected(60):
             logging.error(f'Failed to connect {username} (timeout)')
             return
 
         logging.success(f'Connected {username}')
-
         time.sleep(3)
-        with open(cmdfile, 'r') as f:
-            commands = [line.strip() for line in f if line.strip()]
 
-        for command in commands:
-            r = requests.post('http://localhost:6767/send', json={
-                "host": server, "port": port, "username": username, "message": command
-            })
-            if r.status_code != 200:
-                logging.error(f'Failed to send [{username}] {r.status_code}')
+        max_attempts = 4
+        for attempt in range(max_attempts):
+            ok = send_commands()
+            if ok:
+                logging.success(f'All commands sent for {username}')
                 break
-            logging.success(f'[{username}] Sent: {command}')
-            time.sleep(0.1)
-
-        logging.success(f'All commands sent for {username}')
+            else:
+                if attempt < max_attempts - 1:
+                    logging.info(f'[{username}] Waiting for rejoin... ({attempt+1}/{max_attempts-1})')
+                    time.sleep(5)
+                    if wait_connected(60):
+                        logging.success(f'[{username}] Rejoined — retrying commands')
+                        time.sleep(3)
+                    else:
+                        logging.error(f'[{username}] Rejoin timeout')
+                        break
+                else:
+                    logging.error(f'[{username}] Max cmd attempts reached')
 
         if keep == 'false':
             requests.post('http://localhost:6767/disconnect', json={
@@ -85,7 +102,7 @@ def handle_bot(username, server, port, cmdfile, keep, current_proxy, version):
     except Exception as e:
         logging.error(f'[{username}] {e}')
 
-def ogv2(userfile, server, cmdfile, keep, count=1, proxy=None, version='1.21.4'):
+def ogv2(userfile, server, cmdfile, keep, count=1, proxy=None, version='1.21.8'):
     try:
         if keep not in ['true', 'false']:
             logging.error('Please enter a valid value: true/false')
@@ -102,6 +119,19 @@ def ogv2(userfile, server, cmdfile, keep, count=1, proxy=None, version='1.21.4')
 
         if proxy in ['none', 'null', '-', '']:
             proxy = None
+
+        if proxy and proxy.endswith('.txt'):
+            path = proxy
+            if not os.path.exists(path):
+                logging.error(f'Proxy file not found: {path}')
+                return
+            with open(path, 'r') as f:
+                PROXIES[:] = [line.strip() for line in f if line.strip()]
+            if not PROXIES:
+                logging.error(f'Proxy file is empty: {path}')
+                return
+            logging.info(f'Loaded {len(PROXIES)} proxies from {path}')
+            proxy = 'auto'
 
         if proxy == 'auto' and not load_proxies():
             return
@@ -125,7 +155,7 @@ def ogv2(userfile, server, cmdfile, keep, count=1, proxy=None, version='1.21.4')
             t.daemon = True
             t.start()
             threads.append(t)
-            time.sleep(0)
+            time.sleep(0.5)
 
         for t in threads:
             t.join()

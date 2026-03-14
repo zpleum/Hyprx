@@ -272,6 +272,10 @@ def reload():
 
 def execmd(cmd):
     commands = getcmds()
+    update_rpc(
+        state=f'Executing: {cmd}',
+        details='Hyprx - CLI toolkit for Minecraft'
+    )
     try:
         part = cmd.split()
         if len(part) == 0: return
@@ -324,6 +328,8 @@ def console_handler(event):
 
 win32api.SetConsoleCtrlHandler(console_handler, True)
 
+from plugins.discord_rpc import init_rpc, update_rpc, stop_rpc
+
 if __name__ == '__main__':
     if os.name == 'nt':
         os.system(f'title {_main_title}')
@@ -333,6 +339,9 @@ if __name__ == '__main__':
     loadscripts()
     stats(stars, updated, version)
 
+    CLIENT_ID = '1482373256219594823'
+    init_rpc(CLIENT_ID)
+
     while True:
         try:
             cmd = input(f'\n  {dim}┌─{yellow}Hyprx{dim}─╼{reset} ')
@@ -341,8 +350,13 @@ if __name__ == '__main__':
                 continue
             print(f'  {dim}└╼{reset} ', end='', flush=True)
             execmd(cmd)
+            
+            update_rpc(state=f'Executing: {cmd}', details='Hyprx - CLI toolkit for Minecraft')
+            
         except KeyboardInterrupt:
-            print()
-            exit()
+            print("\nExiting...")
+            stop_rpc()
+            break
         except EOFError:
-            pass
+            stop_rpc()
+            break

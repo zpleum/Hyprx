@@ -173,29 +173,29 @@ app.post('/connect', async (req, res) => {
               newBot._client.write('resource_pack_receive', { uuid: data.uuid, result: 0 });
             });
 
-            newBot.on('spawn', () => {
-              console.log(`[Bot] Rejoined ${username} (attempt ${attempt})`);
+            newBot.once('spawn', () => {
+              console.log(`[Bot] Rejoined ${username} (attempt ${attempt}/3)`);
               statuz[server][username].connected = true;
             });
 
-            newBot.on('kicked', reason => {
+            newBot.once('kicked', reason => {
               const msg2 = deep(reason);
               console.log(`[Bot KICKED after rejoin] ${msg2}`);
               const shouldRejoinAgain = msg2.includes('analyzing your connection') || msg2.includes('re-join') || msg2.includes('queued for verification') || msg2.includes('ระบบ') || msg2.includes('บอท') || msg2.includes('ระบบป้องกัน') || msg2.includes('เข้า') || msg2.includes('เข้าใหม่') || msg2.includes('ใหม่') || msg2.includes('อีกครั้ง');
               if (shouldRejoinAgain) doRejoin(attempt + 1);
             });
 
-            newBot.on('error', err => {
-              if (err.message?.includes('PartialReadError')) return;
-              if (err.message?.includes('Chunk size')) return;
-              console.log(`[Bot ERROR]`, err.message);
-            });
-
-            newBot.on('end', () => {
+            newBot.once('end', () => {
               console.log(`[Bot DISCONNECTED after rejoin]`);
               if (statuz[server]?.[username]) {
                 statuz[server][username].connected = false;
               }
+            });
+
+            newBot.on('error', err => {
+              if (err.message?.includes('PartialReadError')) return;
+              if (err.message?.includes('Chunk size')) return;
+              console.log(`[Bot ERROR]`, err.message);
             });
 
           }, 10000);
