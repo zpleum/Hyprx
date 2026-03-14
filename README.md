@@ -6,8 +6,7 @@ Hyprx is a modular CLI toolkit for Minecraft server analysis, bot automation and
   <img src="https://i.postimg.cc/GtCLVZnM/Hyprx.png" alt="Header Image" style="width:30%; max-width:600px;"/>
 </h1>
 
-This project is based on Banana by x5ten.
-Modifications and improvements were made in Hyprx.
+---
 
 <h1 align="center">
   <img src="https://i.postimg.cc/dtSM3ZhJ/image.png" alt="Header Image" style="width:80%; max-width:600px;"/>
@@ -141,3 +140,6 @@ python main.py / Open 'START Hyprx.bat'
 **This tool is for educational and ethical testing purposes only.** The developer of **Hyprx** is not responsible for any misuse, damage, or illegal activities caused by this software. Use it at your own risk. By using this tool, you agree to comply with your local laws and regulations regarding cybersecurity and network testing.
 
 This tool is intended strictly for security research and testing environments where you have permission.
+
+This project is based on Banana by x5ten.
+Modifications and improvements were made in Hyprx.
