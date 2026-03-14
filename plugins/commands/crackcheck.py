@@ -5,8 +5,10 @@ import json
 
 VERSIONS = {
     '1.21.11': 774,
+    '1.21.10': 773,
     '1.21.9':  773,
     '1.21.8':  772,
+    '1.21.7':  772,
     '1.21.6':  771,
     '1.21.5':  770,
     '1.21.4':  769,
@@ -146,24 +148,12 @@ def parse_reason(payload):
         pass
     return None
 
-def crackcheck(server, version):
+TRY_VERSIONS = ['1.21.11', '1.21.8', '1.21.4', '1.21.1', '1.20.4', '1.20.1', '1.19.4', '1.18.2', '1.17.1', '1.16.5', '1.12.2', '1.8.8']
+
+def try_connect(host, port, proto):
     try:
-        if ':' in server:
-            host, port = server.split(':')
-            port = int(port)
-        else:
-            host, port = server, 25565
-
-        proto = VERSIONS.get(version)
-        if proto is None:
-            logging.error(f'Unknown version: {version}')
-            logging.info(f'Available: {", ".join(VERSIONS.keys())}')
-            return
-
-        logging.info(f'Checking {host}:{port} [{version}]...')
-
         s = socket.socket()
-        s.settimeout(8)
+        s.settimeout(5)
         s.connect((host, port))
 
         host_bytes = host.encode()
@@ -175,7 +165,6 @@ def crackcheck(server, version):
             varint(2)
         )
         s.send(make_packet(data))
-
         name = b'HyprxCrackCheck'
         s.send(make_packet(b'\x00' + varint(len(name)) + name))
 
@@ -200,6 +189,47 @@ def crackcheck(server, version):
                 continue
 
         s.close()
+        return mode, disconnect_reason
+    except:
+        return None, None
+
+def crackcheck(server, version):
+    try:
+        if ':' in server:
+            host, port = server.split(':')
+            port = int(port)
+        else:
+            host, port = server, 25565
+
+        proto = VERSIONS.get(version)
+        if proto is None:
+            logging.error(f'Unknown version: {version}')
+            logging.info(f'Available: {", ".join(VERSIONS.keys())}')
+            return
+
+        logging.info(f'Checking {host}:{port} [{version}]...')
+
+        mode, disconnect_reason = try_connect(host, port, proto)
+
+        if mode == 'disconnected' and not disconnect_reason:
+            logging.info('No reason received — trying other versions...')
+            for v in TRY_VERSIONS:
+                if v == version:
+                    continue
+                p = VERSIONS.get(v)
+                m, r = try_connect(host, port, p)
+                if m in ['premium', 'cracked']:
+                    mode = m
+                    version = v
+                    proto = p
+                    break
+                if m == 'disconnected' and r:
+                    mode = m
+                    disconnect_reason = r
+                    version = v
+                    proto = p
+                    break
+                logging.info(f'Tried {v} — {m or "no response"}')
 
         print()
         logging.success(f'Host:        {host}:{port}')

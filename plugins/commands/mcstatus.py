@@ -18,14 +18,36 @@ def mcstatus(server):
 
         logging.info(f'Querying {host}:{port}')
 
-        r = requests.get(f'https://api.mcsrvstat.us/3/{host}:{port}', timeout=10)
+        r = requests.get(
+            f'https://api.mcsrvstat.us/3/{host}:{port}',
+            timeout=10,
+            headers={'User-Agent': 'Hyprx/1.0 Minecraft Tool'}
+        )
         data = r.json()
 
         print()
 
         if not data.get('online'):
-            logging.error(f'Server is offline or unreachable')
-            return
+            r2 = requests.get(
+                f'https://api.mcstatus.io/v2/status/java/{host}:{port}',
+                timeout=10
+            )
+            data2 = r2.json()
+            if data2.get('online'):
+                data = {
+                    'online': True,
+                    'version': data2.get('version', {}).get('name_clean', 'N/A'),
+                    'players': {
+                        'online': data2.get('players', {}).get('online', 0),
+                        'max': data2.get('players', {}).get('max', 0),
+                        'list': [{'name': p['name_clean'], 'uuid': p['uuid']} for p in data2.get('players', {}).get('list', [])]
+                    },
+                    'motd': {'clean': [data2.get('motd', {}).get('clean', '')]},
+                    'software': data2.get('software', None),
+                }
+            else:
+                logging.error(f'Server is offline or unreachable')
+                return
 
         # basic info
         logging.success(f'Host:       {host}')
