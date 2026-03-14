@@ -1,4 +1,4 @@
-# Hyprx 🕹️ - **A free and improved alternative to MCPTool**
+# Hyprx - **A free and improved alternative to MCPTool**
 
 This project is based on Banana by x5ten.
 Modifications and improvements were made in Hyprx.
@@ -6,6 +6,15 @@ Modifications and improvements were made in Hyprx.
 <h1 align="center">
   <img src="https://i.postimg.cc/WzVsMTfx/image.png" alt="Header Image" style="width:80%; max-width:600px;"/>
 </h1>
+
+<p align="center">
+  <img src="https://img.shields.io/github/stars/zPleum/Hyprx?style=for-the-badge&color=yellow" />
+  <img src="https://img.shields.io/github/forks/zPleum/Hyprx?style=for-the-badge&color=blue" />
+  <img src="https://img.shields.io/github/issues/zPleum/Hyprx?style=for-the-badge&color=red" />
+  <img src="https://img.shields.io/github/license/zPleum/Hyprx?style=for-the-badge&color=green" />
+  <img src="https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python" />
+  <img src="https://img.shields.io/github/last-commit/zPleum/Hyprx?style=for-the-badge" />
+</p>
 
 ---
 
@@ -42,7 +51,7 @@ python main.py / Open 'START Hyprx.bat'
 
 # ⚙️ Features
 
-## 📖 Categories
+## Categories
 
 ```
 RECON / OSINT
@@ -129,15 +138,16 @@ UTILITY
 
 ---
 
+## Star History
+
+<p align="center">
+  <a href="https://star-history.com/#zPleum/Hyprx&Date">
+    <img src="https://api.star-history.com/svg?repos=zPleum/Hyprx&type=Date" alt="Star History Chart" style="max-width:600px;"/>
+  </a>
+</p>
+
+---
+
 ### ⚠️ Disclaimer
 
 **This tool is for educational and ethical testing purposes only.** The developer of **Hyprx** is not responsible for any misuse, damage, or illegal activities caused by this software. Use it at your own risk. By using this tool, you agree to comply with your local laws and regulations regarding cybersecurity and network testing.
-
-![Stars](https://img.shields.io/github/stars/zPleum/Hyprx?style=for-the-badge&color=yellow)
-![Forks](https://img.shields.io/github/forks/zPleum/Hyprx?style=for-the-badge&color=blue)
-![Issues](https://img.shields.io/github/issues/zPleum/Hyprx?style=for-the-badge&color=red)
-![License](https://img.shields.io/github/license/zPleum/Hyprx?style=for-the-badge&color=green)
-![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
-![Last Commit](https://img.shields.io/github/last-commit/zPleum/Hyprx?style=for-the-badge)
-
-[![Star History](https://api.star-history.com/svg?repos=zPleum/Hyprx&type=Date)](https://star-history.com/#zPleum/Hyprx)
