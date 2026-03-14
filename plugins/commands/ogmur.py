@@ -26,7 +26,7 @@ def load_proxies():
 def random_name():
     return f"{random.choice(FIRST)}{random.choice(LAST)}{random.randint(0,99)}"
 
-def ogmur(userfile, server, cmdfile, keep, count=1, proxy=None, delay=5):
+def ogmur(userfile, server, cmdfile, keep, count=1, proxy=None, delay=5, version='1.21.4'):
     try:
         if keep not in ['true', 'false']:
             logging.error('Please enter a valid value: true/false')
@@ -60,7 +60,7 @@ def ogmur(userfile, server, cmdfile, keep, count=1, proxy=None, delay=5):
             else:
                 current_proxy = None
 
-            payload = {"host": server, "port": port, "username": username}
+            payload = {"host": server, "port": port, "username": username, "version": version}
             if current_proxy is not None:
                 payload["proxy"] = current_proxy
 

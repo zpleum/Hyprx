@@ -186,16 +186,20 @@ def stats(stars, updated, version):
         ("stars  ", str(stars)),
         ("updated", updated),
         ("user   ", user),
+        ("credit ", "Hyprx modified by zPleum, based on Banana by x5ten"),
     ]
 
     title_text = f"  Hyprx {version}"
     max_row = max(len(f"  {l}  {v}") for l, v in rows)
-    W = max(len(title_text), max_row) + 60
+    W = min(max(len(title_text), max_row) + 10, tw - 4)
 
-    pad_left = ' ' * ((tw - W - 2) // 2)
+    pad_left = ' ' * max(0, (tw - W - 2) // 2)
 
     def row(label, value):
         inner = f"  {label}  {value}"
+        if len(inner) > W:
+            value = value[:W - len(f"  {label}  ") - 3] + "..."
+            inner = f"  {label}  {value}"
         pad = W - len(inner)
         return f"{pad_left}{dim}│{gray}  {label}  {white}{value}{' ' * pad}{dim}│{reset}"
 

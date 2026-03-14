@@ -29,10 +29,28 @@ from plugins.commands.bungeeguard import bungee
 from plugins.commands.websearch import web
 from plugins.commands.pterodactyl import ptero
 from plugins.commands.iphistory import iphistory
-from plugins.commands.sendmsg import sendmsg
-from plugins.commands.tcpflood import tcpflood
+from plugins.commands.botchat import botchat
+from plugins.commands.synflood import synflood
 from plugins.commands.udpflood import udpflood
 from plugins.commands.logflood import logflood
+from plugins.commands.whois import whois
+from plugins.commands.geoip import geoip
+from plugins.commands.ping import ping
+from plugins.commands.mcstatus import mcstatus
+from plugins.commands.bungeecheck import bungeecheck
+from plugins.commands.crackcheck import crackcheck
+from plugins.commands.playerlist import playerlist
+from plugins.commands.proxycheck import proxycheck
+from plugins.commands.proxyscrape import proxyscrape
+from plugins.commands.botspam import botspam
+from plugins.commands.botdisconnect import botdisconnect
+from plugins.commands.traceroute import traceroute
+from plugins.commands.slowloris import slowloris
+from plugins.commands.b64 import b64
+from plugins.commands.hash import hash
+from plugins.commands.crack import crack
+from plugins.commands.reverseip import reverseip
+from plugins.commands.httpflood import httpflood
 
 scripts = {}
 
@@ -67,16 +85,34 @@ def getcmds():
         'update':       (upd, 0, 0, getstring('updateh')),
         'kick':         (kick, 2, 1, getstring('kickh')),
         'shell':        (shell, 3, 0, getstring('shellh')),
-        'connect':      (connect, 2, 1, getstring('connecth')),
+        'connect':      (connect, 2, 2, getstring('connecth')),
         'rcon':         (rcon, 2, 0, getstring('rconh')),
         'brutrcon':     (rconbrut, 2, 0, getstring('brutrconh')),
         'fuzz':         (fuzz, 3, 0, getstring('fuzzh')),
-        'ogmur':        (ogmur, 4, 2, getstring('ogmurh')),
-        'ogv2':         (ogv2, 4, 2, getstring('ogv2h')),
-        'sendmsg':      (sendmsg, 2, 0, getstring('sendmsgh')),
-        'tcpflood':     (tcpflood, 2, 0, getstring('tcpfloodh')),
+        'ogmur':        (ogmur, 4, 4, getstring('ogmurh')),
+        'ogv2':         (ogv2, 4, 4, getstring('ogv2h')),
+        'botchat':      (botchat, 2, 0, getstring('botchath')),
+        'synflood':     (synflood, 2, 0, getstring('synfloodh')),
         'udpflood':     (udpflood, 2, 0, getstring('udpfloodh')),
         'logflood':     (logflood, 2, 0, getstring('logfloodh')),
+        'whois':        (whois, 1, 0, getstring('whoish')),
+        'geoip':        (geoip, 1, 0, getstring('geoiph')),
+        'ping':         (ping, 1, 1, getstring('pingh')),
+        'mcstatus':     (mcstatus, 1, 0, getstring('mcstatush')),
+        'bungeecheck':  (bungeecheck, 1, 0, getstring('bungeecheckh')),
+        'crackcheck':   (crackcheck, 2, 0, getstring('crackcheckh')),
+        'playerlist':   (playerlist, 1, 0, getstring('playerlisth')),
+        'proxycheck':   (proxycheck, 1, 1, getstring('proxycheckh')),
+        'proxyscrape':  (proxyscrape, 1, 1, getstring('proxyscrapeh')),
+        'botspam':      (botspam, 2, 2, getstring('botspamh')),
+        'botdisconnect': (botdisconnect, 1, 1, getstring('botdisconnecth')),
+        'traceroute':   (traceroute, 1, 1, getstring('tracerouteh')),
+        'slowloris':    (slowloris, 1, 2, getstring('slowlorish')),
+        'b64':          (b64, 2, 0, getstring('b64h')),
+        'hash':         (hash, 2, 0, getstring('hashh')),
+        'crack':        (crack, 2, 2, getstring('crackh')),
+        'reverseip':    (reverseip, 1, 0, getstring('reverseiph')),
+        'httpflood':    (httpflood, 1, 1, getstring('httpfloodh')),
         'reload':       (reload, 0, 0, getstring('reloadh')),
         'exit':         (exit, 0, 0, getstring('exith'))
     }

@@ -37,14 +37,16 @@ function parseProxy(proxyUrl) {
 app.post('/connect', async (req, res) => {
   console.log("CONNECT REQUEST:", req.body)
 
-  const { host, port = 25565, username, proxy } = req.body;
+  const { host, port = 25565, username, proxy, version = '1.21.4' } = req.body;
   const server = `${host}:${port}`;
   if (botz[server]?.[username]) return res.status(400).json({ error: 'Bot already connected.' });
 
+  const cleanProxy = (proxy && proxy !== 'none' && proxy !== 'null' && proxy !== '-') ? proxy : null;
+
   try {
     let customConnect;
-    if (proxy) {
-      const broxy = parseProxy(proxy);
+    if (cleanProxy) {
+      const broxy = parseProxy(cleanProxy);
       customConnect = async (client) => {
         const { socket } = await SocksClient.createConnection({
           proxy: {
@@ -69,7 +71,7 @@ app.post('/connect', async (req, res) => {
       username: username,
       host: host,
       port: Number(port),
-      version: '1.21.11',
+      version: version,
       auth: 'offline',
       hideErrors: true,
       checkTimeoutInterval: 120000,

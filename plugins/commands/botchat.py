@@ -2,7 +2,7 @@ from plugins.common import *
 import requests
 import time
 
-def sendmsg(server, message_and_target):
+def botchat(server, message_and_target):
     parts = message_and_target.split()
     last = parts[-1]
     

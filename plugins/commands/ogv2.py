@@ -27,11 +27,11 @@ def load_proxies():
 def random_name():
     return f"{random.choice(FIRST)}{random.choice(LAST)}{random.randint(0,99)}"
 
-def handle_bot(username, server, port, cmdfile, keep, current_proxy):
+def handle_bot(username, server, port, cmdfile, keep, current_proxy, version):
     try:
         connected = False
 
-        payload = {"host": server, "port": port, "username": username}
+        payload = {"host": server, "port": port, "username": username, "version": version}
         if current_proxy is not None:
             payload["proxy"] = current_proxy
 
@@ -85,7 +85,7 @@ def handle_bot(username, server, port, cmdfile, keep, current_proxy):
     except Exception as e:
         logging.error(f'[{username}] {e}')
 
-def ogv2(userfile, server, cmdfile, keep, count=1, proxy=None):
+def ogv2(userfile, server, cmdfile, keep, count=1, proxy=None, version='1.21.4'):
     try:
         if keep not in ['true', 'false']:
             logging.error('Please enter a valid value: true/false')
@@ -99,6 +99,9 @@ def ogv2(userfile, server, cmdfile, keep, count=1, proxy=None):
         if not checkserver(server):
             logging.error('Please input a real domain or server')
             return
+
+        if proxy in ['none', 'null', '-', '']:
+            proxy = None
 
         if proxy == 'auto' and not load_proxies():
             return
@@ -118,7 +121,7 @@ def ogv2(userfile, server, cmdfile, keep, count=1, proxy=None):
             else:
                 current_proxy = None
 
-            t = threading.Thread(target=handle_bot, args=(username, server, port, cmdfile, keep, current_proxy))
+            t = threading.Thread(target=handle_bot, args=(username, server, port, cmdfile, keep, current_proxy, version))
             t.daemon = True
             t.start()
             threads.append(t)
