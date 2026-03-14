@@ -66,7 +66,6 @@ python main.py / Open 'START Hyprx.bat'
 | `ogv2`        | `<users/random> <server> <commands> <keep> <count> <proxy>` | Multi-threaded bot execution                      |
 | `connect`     | `<username> <server> <proxy>`                               | Connects a bot and allows messaging               |
 | `sendmsg`     | `<server> <message> <username/all>`                         | Sends chat messages                               |
-| `sendcmd`     | `<username> <server> <commands> <proxy>`                    | Bot executes commands from file                   |
 | `kick`        | `<username> <server> <proxy>`                               | Kicks a player from cracked server                |
 | `rcon`        | `<server> <password>`                                       | Connects to server RCON                           |
 | `brutrcon`    | `<server> <file>`                                           | Brute-force RCON passwords                        |

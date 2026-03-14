@@ -26,7 +26,6 @@
     "rconh": "วิธีใช้: rcon <server> <password>\nเชื่อมต่อ RCON console ของเซิร์ฟเวอร์",
     "brutrconh": "วิธีใช้: brutrcon <server> <file>\nทดสอบรหัสผ่าน RCON จากไฟล์แบบ brute-force",
     "fuzzh": "วิธีใช้: fuzz <url> <file> <threads>\nค้นหา path หรือ subdomain ที่ซ่อนอยู่\nตัวอย่าง: example.com/FUZZ หรือ FUZZ.example.com",
-    "sendcmdh": "วิธีใช้: sendcmd <username> <server> <commands> <proxy>\nส่งบอทที่รันคำสั่งจากไฟล์",
     "pteroh": "วิธีใช้: ptero <panel_url>\nใช้ช่องโหว่เพื่อสร้างบัญชีบน Pterodactyl panel",
     "exith": "ออกจาก Hyprx",
     "initmsg": "กรุณารอสักครู่ขณะตั้งค่า environment",

@@ -255,4 +255,4 @@ app.post('/disconnect', (req, res) => {
 });
 
 app.get('/status', (req, res) => res.json(Object.keys(statuz).length ? statuz : { connected: false }));
-app.listen(port, () => console.log(`API listening on http://localhost:${port}`));
+app.listen(port, () => console.log(`   ─╼ API listening on http://localhost:${port}`));

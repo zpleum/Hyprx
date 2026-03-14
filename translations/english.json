@@ -26,7 +26,6 @@
     "rconh": "Usage: rcon <server> <password>\nConnects to a server's RCON console",
     "brutrconh": "Usage: brutrcon <server> <file>\nBrute-forces RCON using passwords from a file",
     "fuzzh": "Usage: fuzz <url> <file> <threads>\nFuzzes a URL for hidden paths or subdomains\nExample: example.com/FUZZ or FUZZ.example.com",
-    "sendcmdh": "Usage: sendcmd <username> <server> <commands> <proxy>\nSends a bot that executes commands from a file",
     "pteroh": "Usage: ptero <panel_url>\nExploits a vulnerability to create an account on a Pterodactyl panel",
     "exith": "Exits Hyprx",
     "initmsg": "Please wait while we set up your environment.",
