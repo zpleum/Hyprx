@@ -1,5 +1,7 @@
 # Hyprx 🕹️ - **A free and improved alternative to MCPTool**
 
+Hyprx is a modular CLI toolkit for Minecraft server analysis, bot automation and network testing.
+
 This project is based on Banana by x5ten.
 Modifications and improvements were made in Hyprx.
 
@@ -51,31 +53,13 @@ python main.py / Open 'START Hyprx.bat'
 
 # ⚙️ Features
 
-## Categories
+## Key Features
 
-```
-RECON / OSINT
-  geoip · ipinfo · iphistory · whois · dns · target
-  reverseip · uuid · server · mcstatus · playerlist · websearch
-
-ATTACK / FLOOD
-  tcpflood · udpflood · synflood · logflood · slowloris · httpflood
-
-BOT
-  ogmur · ogv2 · connect · botchat · botspam · botdisconnect · kick
-
-NETWORK
-  ping · traceroute · scan · mcscan · bungeecheck · crackcheck
-
-PROXY
-  proxy · fakeproxy · bungeeguard · proxycheck · proxyscrape · fetch
-
-EXPLOIT
-  rcon · brutrcon · ptero · fuzz · shell
-
-UTILITY
-  b64 · hash · crack · edit · check · monitor · clear · reload · update · exit
-```
+- Minecraft bot automation
+- Server reconnaissance
+- Proxy scraping and validation
+- Multi-threaded network scanning
+- Hash cracking utilities
 
 ---
 
@@ -151,3 +135,5 @@ UTILITY
 ### ⚠️ Disclaimer
 
 **This tool is for educational and ethical testing purposes only.** The developer of **Hyprx** is not responsible for any misuse, damage, or illegal activities caused by this software. Use it at your own risk. By using this tool, you agree to comply with your local laws and regulations regarding cybersecurity and network testing.
+
+This tool is intended strictly for security research and testing environments where you have permission.
