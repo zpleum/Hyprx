@@ -2,6 +2,10 @@
 
 Hyprx is a modular CLI toolkit for Minecraft server analysis, bot automation and network testing.
 
+<h1 align="center">
+  <img src="https://i.postimg.cc/GtCLVZnM/Hyprx.png" alt="Header Image" style="width:80%; max-width:600px;"/>
+</h1>
+
 This project is based on Banana by x5ten.
 Modifications and improvements were made in Hyprx.
 
