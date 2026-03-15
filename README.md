@@ -3,7 +3,8 @@
 > A powerful modular CLI toolkit for Minecraft server analysis, automation, and network testing
 
 <h1 align="center">
-  <img src="https://i.postimg.cc/GtCLVZnM/Hyprx.png" alt="Hyprx Logo" width="300"/>
+  <img src="https://i.postimg.cc/GtCLVZnM/Hyprx.png" alt="Hyprx Logo" width="300" style="margin-right:40px;"/>
+  <img src="https://i.postimg.cc/pLQgw8T1/Hyprx-Idle.png" alt="Hyprx Idle" width="300"/>
 </h1>
 
 <h1 align="center">
