@@ -7,6 +7,6 @@
   },
   "rpc": {
     "auto_idle": true,
-    "auto_idle_time": 5
+    "auto_idle_time": 300
   }
 }
