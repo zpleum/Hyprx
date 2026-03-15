@@ -6,7 +6,7 @@
     "randomize_port": false
   },
   "rpc": {
-    "auto_idle": "5",
+    "auto_idle": "3",
     "auto_idle_time": 300
   }
 }

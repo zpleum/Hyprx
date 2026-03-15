@@ -12,6 +12,11 @@ IDLE = False
 AUTO_IDLE = True
 AUTO_IDLE_TIME = 300
 
+def set_config(auto_idle, auto_idle_time):
+    global AUTO_IDLE, AUTO_IDLE_TIME
+    AUTO_IDLE = auto_idle
+    AUTO_IDLE_TIME = float(auto_idle_time)
+
 def init_rpc(client_id):
     global RPC, START_TIME, _ready
 
@@ -65,10 +70,9 @@ def activity():
         )
 
 def update_rpc(state='Finding server to exploit', details='Hyprx - CLI toolkit for Minecraft'):
-    global RPC, _ready
+    global RPC, _ready, LAST_ACTIVITY, IDLE
     if not RPC or not _ready: return
     
-    global LAST_ACTIVITY, IDLE
     LAST_ACTIVITY = time.time()
     IDLE = False 
 
@@ -76,15 +80,10 @@ def update_rpc(state='Finding server to exploit', details='Hyprx - CLI toolkit f
         RPC.update(state=state, details=details, start=START_TIME)
     except: pass
 
-
 def stop_rpc():
     global RPC, _ready
-
     if RPC:
-        try:
-            RPC.close()
-        except:
-            pass
-
+        try: RPC.close()
+        except: pass
     RPC = None
     _ready = False

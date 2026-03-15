@@ -344,15 +344,15 @@ if __name__ == '__main__':
     stats(stars, updated, version)
 
     CLIENT_ID = '1482373256219594823'
-    init_rpc(CLIENT_ID)
-
     import plugins.discord_rpc as rpc
+    rpc.init_rpc(CLIENT_ID)
 
-    with open("config.json") as f:
-        cfg = json.load(f)
-
-    rpc.AUTO_IDLE = cfg["rpc"].get("auto_idle", True)
-    rpc.AUTO_IDLE_TIME = cfg["rpc"].get("auto_idle_time", 300)
+    try:
+        with open("config.json") as f:
+            cfg = json.load(f)
+        rpc.set_config(cfg["rpc"].get("auto_idle", True), cfg["rpc"].get("auto_idle_time", 300))
+    except:
+        pass
 
     while True:
         try:
@@ -366,12 +366,19 @@ if __name__ == '__main__':
             
             print(f'  {dim}└╼{reset} ', end='', flush=True)
             execmd(cmd)
+            
+            try:
+                with open("config.json") as f:
+                    cfg = json.load(f)
+                rpc.set_config(cfg["rpc"].get("auto_idle", True), cfg["rpc"].get("auto_idle_time", 300))
+            except:
+                pass
 
         except KeyboardInterrupt:
             print("\nExiting Hyprx...")
-            stop_rpc()
+            rpc.stop_rpc()
             kill_api()
             break
         except EOFError:
-            stop_rpc()
+            rpc.stop_rpc()
             break
