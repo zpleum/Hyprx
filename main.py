@@ -351,9 +351,8 @@ if __name__ == '__main__':
     loadscripts()
     stats(stars, updated, version)
 
-    CLIENT_ID = '1482373256219594823'
     import plugins.discord_rpc as rpc
-    rpc.init_rpc(CLIENT_ID)
+    rpc.init_rpc(rpc.CLIENT_ID)
 
     try:
         with open("config.json") as f:

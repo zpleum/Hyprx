@@ -2,13 +2,16 @@ from pypresence import Presence
 import time
 import threading
 
+CLIENT_ID = '1482373256219594823'
+
+ICON_MAIN = 'hyprx'
+ICON_IDLE = 'hyprx_idle'
+
 RPC = None
 START_TIME = None
 _ready = False
-
 LAST_ACTIVITY = time.time()
 IDLE = False
-
 AUTO_IDLE = True
 AUTO_IDLE_TIME = 300
 
@@ -27,7 +30,7 @@ def init_rpc(client_id):
             RPC.connect()
             START_TIME = time.time()
             _ready = True
-            update_rpc(state='Starting Hyprx...', details='Hyprx - CLI toolkit for Minecraft')
+            update_rpc(state='Starting Hyprx...')
             threading.Thread(target=_idle_watchdog, daemon=True).start()
         except Exception:
             _ready = False
@@ -41,7 +44,6 @@ def _idle_watchdog():
             elapsed = time.time() - LAST_ACTIVITY
             if not IDLE and elapsed >= AUTO_IDLE_TIME:
                 set_idle()
-            
         time.sleep(1)
 
 def set_idle():
@@ -49,9 +51,11 @@ def set_idle():
     if not RPC or not _ready: return
     try:
         RPC.update(
-            state="Idle",
+            state="Idling",
             details="Hyprx - CLI toolkit for Minecraft",
-            start=START_TIME
+            start=START_TIME,
+            large_image=ICON_IDLE,
+            large_text="System is Idle"
         )
         IDLE = True
     except: pass
@@ -62,20 +66,25 @@ def activity():
     
     if IDLE:
         IDLE = False
-        update_rpc(
-            state='Finding server to exploit', 
-            details='Hyprx - CLI toolkit for Minecraft'
-        )
+        update_rpc(state='Finding server to exploit')
 
 def update_rpc(state=None, details='Hyprx - CLI toolkit for Minecraft'):
-    global RPC, _ready, LAST_ACTIVITY, IDLE
+    global RPC, _ready, IDLE
     if not RPC or not _ready: return
     
     if state is None:
         state = 'Finding server to exploit'
 
+    current_icon = ICON_IDLE if IDLE else ICON_MAIN
+
     try:
-        RPC.update(state=state, details=details, start=START_TIME)
+        RPC.update(
+            state=state, 
+            details=details, 
+            start=START_TIME,
+            large_image=current_icon,
+            large_text="Hyprx Minecraft Toolkit"
+        )
     except: pass
 
 def stop_rpc():
