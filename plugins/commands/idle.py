@@ -5,16 +5,16 @@ def idle():
     global IDLE, LAST_ACTIVITY
 
     if IDLE:
-        print(f"  RPC Status: Idle")
+        IDLE = False
+        LAST_ACTIVITY = time.time()
+        print("  RPC Status: Active (manual toggle)")
     else:
-        print(f"  RPC Status: Active")
-
-    if AUTO_IDLE and not IDLE:
-        remaining = AUTO_IDLE_TIME - int(time.time() - LAST_ACTIVITY)
-        if remaining < 0:
-            remaining = 0
-        print(f"  Time until auto-idle: {remaining}s")
-        print("  Forcing idle now...")
-        set_idle()
-    elif not AUTO_IDLE:
-        pass
+        print("  RPC Status: Active")
+        if AUTO_IDLE:
+            remaining = AUTO_IDLE_TIME - int(time.time() - LAST_ACTIVITY)
+            if remaining <= 0:
+                remaining = 0
+            print(f"  Time until auto-idle: {remaining}s")
+            if remaining == 0:
+                print("  Idle now...")
+                set_idle()

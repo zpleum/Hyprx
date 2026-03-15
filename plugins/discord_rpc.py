@@ -62,7 +62,7 @@ def set_idle():
     try:
         RPC.update(
             state="Idle",
-            details="Hyprx CLI",
+            details="Hyprx - CLI toolkit for Minecraft",
             start=START_TIME
         )
         IDLE = True
