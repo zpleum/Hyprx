@@ -275,10 +275,18 @@ def reload():
 
 def execmd(cmd):
     commands = getcmds()
-    update_rpc(
-        state=f'Executing: {cmd}',
-        details='Hyprx - CLI toolkit for Minecraft'
-    )
+    part = cmd.split()
+    if len(part) == 0: return
+    command, *args = part
+    
+    if command != "idle":
+        rpc.activity() 
+        
+        update_rpc(
+            state=f'Executing: {cmd}',
+            details='Hyprx - CLI toolkit for Minecraft'
+        )
+
     try:
         part = cmd.split()
         if len(part) == 0: return
@@ -357,14 +365,13 @@ if __name__ == '__main__':
     while True:
         try:
             cmd = input(f'\n  {dim}┌─{yellow}Hyprx{dim}─╼{reset} ')
-            
-            rpc.activity() 
 
             if not cmd.strip():
                 print(f'  {dim}└╼  {gray}{getstring("helphint")}{reset}')
                 continue
             
             print(f'  {dim}└╼{reset} ', end='', flush=True)
+            
             execmd(cmd)
             
             try:
