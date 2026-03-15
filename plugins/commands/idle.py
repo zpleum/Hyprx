@@ -12,9 +12,11 @@ def idle():
         print("  RPC Status: Active")
         if AUTO_IDLE:
             remaining = AUTO_IDLE_TIME - int(time.time() - LAST_ACTIVITY)
-            if remaining <= 0:
-                remaining = 0
+            remaining = max(0, remaining)
             print(f"  Time until auto-idle: {remaining}s")
+
             if remaining == 0:
-                print("  Idle now...")
+                IDLE = True
+                LAST_ACTIVITY = time.time()
                 set_idle()
+                print("  RPC Status: Idle")
