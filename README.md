@@ -1,6 +1,6 @@
 # Hyprx 🕹️ - High-performance tools for Minecraft automation and network analysis
 
-### A powerful modular CLI toolkit for Minecraft server analysis, automation, and network testing
+> A powerful modular CLI toolkit for Minecraft server analysis, automation, and network testing
 
 <h1 align="center">
   <img src="https://i.postimg.cc/GtCLVZnM/Hyprx.png" alt="Hyprx Logo" width="300"/>
