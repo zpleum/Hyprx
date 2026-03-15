@@ -1,6 +1,7 @@
 import threading
 import importlib.util
 import win32api
+import json
 from plugins.initialize import *
 from plugins.common import *
 from plugins.logging import *
@@ -51,6 +52,7 @@ from plugins.commands.hash import hash
 from plugins.commands.crack import crack
 from plugins.commands.reverseip import reverseip
 from plugins.commands.httpflood import httpflood
+from plugins.commands.idle import idle
 
 scripts = {}
 
@@ -113,6 +115,7 @@ def getcmds():
         'crack':        (crack, 2, 2, getstring('crackh')),
         'reverseip':    (reverseip, 1, 0, getstring('reverseiph')),
         'httpflood':    (httpflood, 1, 1, getstring('httpfloodh')),
+        'idle':         (idle, 0, 0, getstring('idleh')),
         'reload':       (reload, 0, 0, getstring('reloadh')),
         'exit':         (exit, 0, 0, getstring('exith'))
     }
@@ -341,6 +344,14 @@ if __name__ == '__main__':
 
     CLIENT_ID = '1482373256219594823'
     init_rpc(CLIENT_ID)
+
+    import plugins.discord_rpc as rpc
+
+    with open("config.json") as f:
+        cfg = json.load(f)
+
+    rpc.AUTO_IDLE = cfg["rpc"]["auto_idle"]
+    rpc.AUTO_IDLE_TIME = cfg["rpc"]["auto_idle_time"]
 
     while True:
         try:

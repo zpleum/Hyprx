@@ -3,6 +3,8 @@ import json
 import os
 import sys
 import time
+from plugins.discord_rpc import AUTO_IDLE, AUTO_IDLE_TIME
+import plugins.discord_rpc as rpc
 
 default = {
     "language": "english",
@@ -10,6 +12,10 @@ default = {
     "server": {
         "port": 23457,
         "randomize_port": False
+    },
+    "rpc": {
+        "auto_idle": True,
+        "auto_idle_time": 300
     }
 }
 
@@ -17,6 +23,11 @@ languages = ["english", "thai"]
 themes = ["hyprx", "galaxy", "sakura", "midnight", "lily", "ocean", "mint", "rose", "neon", "lava", "forest", "snow", "coffee", "sunset", "charcoal"]
 
 RELOAD_KEYS = ["language", "theme"]
+
+ALIASES = {
+    "auto_idle": "rpc.auto_idle",
+    "idle_time": "rpc.auto_idle_time"
+}
 
 def edit(tf, value=None):
     global default
@@ -26,6 +37,9 @@ def edit(tf, value=None):
 
     with open("config.json", 'r', encoding='utf-8') as f:
         config = json.load(f)
+
+    if tf in ALIASES:
+        tf = ALIASES[tf]
 
     keys = tf.split('.')
     ohio = default
@@ -70,6 +84,14 @@ def edit(tf, value=None):
         json.dump(config, f, indent=2)
 
     logging.success(f"{tf} = {value}")
+
+    if tf == "rpc.auto_idle":
+        rpc.AUTO_IDLE = value
+        logging.info(f"RPC Auto Idle → {value}")
+
+    if tf == "rpc.auto_idle_time":
+        rpc.AUTO_IDLE_TIME = value
+        logging.info(f"RPC Idle Time → {value}s")
 
     if tf in RELOAD_KEYS:
         time.sleep(0.5)

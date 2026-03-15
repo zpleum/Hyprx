@@ -2,7 +2,7 @@
     "helphint": "พิมพ์ 'help' เพื่อดูคำสั่งทั้งหมด",
     "serverh": "วิธีใช้: server <address>\nแสดงข้อมูลของ Minecraft เซิร์ฟเวอร์",
     "uuidh": "วิธีใช้: uuid <ign>\nค้นหา UUID ของผู้เล่นจากชื่อ",
-    "edith": "วิธีใช้: edit <language/theme> <value>\nแก้ไขการตั้งค่าของ Hyprx",
+    "edith": "วิธีใช้: edit <language/theme/auto_idle/idle_time> <value>\nแก้ไขการตั้งค่าของ Hyprx",
     "ipinfoh": "วิธีใช้: ipinfo <ip>\nแสดงข้อมูลรายละเอียดของ IP address",
     "fetchh": "วิธีใช้: fetch <socks4/socks5>\nดึง proxy ใหม่ตามประเภทที่ระบุ",
     "monitorh": "วิธีใช้: monitor <ip>\nตรวจสอบผู้เล่นที่เข้า/ออกจากเซิร์ฟเวอร์ (ต้องเปิด queries)",
@@ -52,5 +52,6 @@
     "hashh": "วิธีใช้: hash <algorithm/all> <text>\nสร้างรหัส Hash จากข้อความโดยใช้อัลกอริทึมที่ระบุ",
     "crackh": "วิธีใช้: crack <hash> <wordlist> <algorithm> <threads>\nการถอดรหัส Hash โดยใช้รายการคำศัพท์",
     "reverseiph": "วิธีใช้: reverseip <ip>\nดึงโดเมนสำหรับ IP address",
-    "httpfloodh": "วิธีใช้: httpflood <host> <threads>\nยิง HTTP request ใส่เซิร์ฟเวอร์"
+    "httpfloodh": "วิธีใช้: httpflood <host> <threads>\nยิง HTTP request ใส่เซิร์ฟเวอร์",
+    "idleh": "วิธีใช้: idle\nตั้งค่า RPC เป็นโหมด Idle"
 }

@@ -2,7 +2,7 @@
     "helphint": "type 'help' to view all available commands",
     "serverh": "Usage: server <address>\nShows information about a Minecraft server",
     "uuidh": "Usage: uuid <ign>\nLooks up a player's UUID by username",
-    "edith": "Usage: edit <language/theme> <value>\nEdits the Hyprx configuration",
+    "edith": "Usage: edit <language/theme/auto_idle/idle_time> <value>\nEdits the Hyprx configuration",
     "ipinfoh": "Usage: ipinfo <ip>\nShows detailed information about an IP address",
     "fetchh": "Usage: fetch <socks4/socks5>\nScrapes fresh proxies of the given type",
     "monitorh": "Usage: monitor <ip>\nMonitors player joins and leaves on a server (requires queries enabled)",
@@ -52,5 +52,6 @@
     "hashh": "Usage: hash <algorithm/all> <text>\nGenerates a hash of a string using a specified algorithm",
     "crackh": "Usage: crack <hash> <wordlist> <algorithm> <threads>\nCracks a hash using a wordlist",
     "reverseiph": "Usage: reverseip <ip>\nLooks up domains for an IP address",
-    "httpfloodh": "Usage: httpflood <host> <threads>\nFloods a server with HTTP requests"
+    "httpfloodh": "Usage: httpflood <host> <threads>\nFloods a server with HTTP requests",
+    "idleh": "Usage: idle\nSets the RPC to idle mode"
 }

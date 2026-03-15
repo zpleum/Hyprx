@@ -67,6 +67,10 @@ def hyprxc():
         "server": {
             "port": 23457,
             "randomize_port": False
+        },
+        "rpc": {
+            "auto_idle": True,
+            "auto_idle_time": 300
         }
     }
     if not os.path.exists('config.json'):

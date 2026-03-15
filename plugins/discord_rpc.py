@@ -6,6 +6,13 @@ RPC = None
 START_TIME = None
 _ready = False
 
+LAST_ACTIVITY = time.time()
+IDLE = False
+
+AUTO_IDLE = True
+AUTO_IDLE_TIME = 300
+
+
 def init_rpc(client_id):
     global RPC, START_TIME, _ready
 
@@ -17,34 +24,88 @@ def init_rpc(client_id):
                 RPC.connect()
                 START_TIME = time.time()
                 _ready = True
-                update_rpc(state='Finding server to exploit', details='Hyprx - CLI toolkit for Minecraft')
+
+                update_rpc(
+                    state='Finding server to exploit',
+                    details='Hyprx - CLI toolkit for Minecraft'
+                )
+
+                threading.Thread(target=_idle_watchdog, daemon=True).start()
                 return
-            except Exception as e:
+
+            except Exception:
                 time.sleep(3)
+
         _ready = False
 
     threading.Thread(target=_connect, daemon=True).start()
     return True
 
-def update_rpc(state='Exploiting', details='Modular CLI toolkit for Minecraft'):
-    global RPC, _ready
+
+def _idle_watchdog():
+    global IDLE
+
+    while True:
+        if AUTO_IDLE and not IDLE:
+            if time.time() - LAST_ACTIVITY >= AUTO_IDLE_TIME:
+                set_idle()
+
+        time.sleep(5)
+
+
+def set_idle():
+    global IDLE
+
     if not RPC or not _ready:
         return
+
+    try:
+        RPC.update(
+            state="Idle",
+            details="Hyprx CLI",
+            start=START_TIME
+        )
+        IDLE = True
+    except:
+        pass
+
+
+def activity():
+    global LAST_ACTIVITY, IDLE
+
+    LAST_ACTIVITY = time.time()
+
+    if IDLE:
+        IDLE = False
+        update_rpc()
+
+
+def update_rpc(state='Exploiting', details='Modular CLI toolkit for Minecraft'):
+    global RPC, _ready
+
+    if not RPC or not _ready:
+        return
+
+    activity()
+
     try:
         RPC.update(
             state=state,
             details=details,
-            start=START_TIME,
+            start=START_TIME
         )
-    except Exception as e:
+    except:
         pass
+
 
 def stop_rpc():
     global RPC, _ready
+
     if RPC:
         try:
             RPC.close()
         except:
             pass
-        RPC = None
-        _ready = False
+
+    RPC = None
+    _ready = False

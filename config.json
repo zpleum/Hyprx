@@ -4,5 +4,9 @@
   "server": {
     "port": 25579,
     "randomize_port": false
+  },
+  "rpc": {
+    "auto_idle": true,
+    "auto_idle_time": 5
   }
 }
