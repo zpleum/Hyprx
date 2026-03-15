@@ -336,6 +336,7 @@ from plugins.discord_rpc import init_rpc, update_rpc, stop_rpc
 if __name__ == '__main__':
     if os.name == 'nt':
         os.system(f'title {_main_title}')
+    
     initialize()
     api()
     threading.Thread(target=watch_api, daemon=True).start()
@@ -350,28 +351,27 @@ if __name__ == '__main__':
     with open("config.json") as f:
         cfg = json.load(f)
 
-    rpc.AUTO_IDLE = cfg["rpc"]["auto_idle"]
-    rpc.AUTO_IDLE_TIME = cfg["rpc"]["auto_idle_time"]
+    rpc.AUTO_IDLE = cfg["rpc"].get("auto_idle", True)
+    rpc.AUTO_IDLE_TIME = cfg["rpc"].get("auto_idle_time", 300)
 
-while True:
-    try:
-        cmd = input(f'\n  {dim}┌─{yellow}Hyprx{dim}─╼{reset} ')
-        if not cmd.strip():
-            print(f'  {dim}└╼  {gray}{getstring("helphint")}{reset}')
-            continue
-        print(f'  {dim}└╼{reset} ', end='', flush=True)
+    while True:
+        try:
+            cmd = input(f'\n  {dim}┌─{yellow}Hyprx{dim}─╼{reset} ')
+            
+            rpc.activity() 
 
-        if cmd.strip().lower() == "idle":
+            if not cmd.strip():
+                print(f'  {dim}└╼  {gray}{getstring("helphint")}{reset}')
+                continue
+            
+            print(f'  {dim}└╼{reset} ', end='', flush=True)
             execmd(cmd)
-            continue
 
-        execmd(cmd)
-        update_rpc(state=f'Executing: {cmd}', details='Hyprx - CLI toolkit for Minecraft')
-
-    except KeyboardInterrupt:
-        print("\nExiting...")
-        stop_rpc()
-        break
-    except EOFError:
-        stop_rpc()
-        break
+        except KeyboardInterrupt:
+            print("\nExiting Hyprx...")
+            stop_rpc()
+            kill_api()
+            break
+        except EOFError:
+            stop_rpc()
+            break
