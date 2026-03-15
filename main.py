@@ -353,21 +353,25 @@ if __name__ == '__main__':
     rpc.AUTO_IDLE = cfg["rpc"]["auto_idle"]
     rpc.AUTO_IDLE_TIME = cfg["rpc"]["auto_idle_time"]
 
-    while True:
-        try:
-            cmd = input(f'\n  {dim}┌─{yellow}Hyprx{dim}─╼{reset} ')
-            if not cmd.strip():
-                print(f'  {dim}└╼  {gray}{getstring("helphint")}{reset}')
-                continue
-            print(f'  {dim}└╼{reset} ', end='', flush=True)
+while True:
+    try:
+        cmd = input(f'\n  {dim}┌─{yellow}Hyprx{dim}─╼{reset} ')
+        if not cmd.strip():
+            print(f'  {dim}└╼  {gray}{getstring("helphint")}{reset}')
+            continue
+        print(f'  {dim}└╼{reset} ', end='', flush=True)
+
+        if cmd.strip().lower() == "idle":
             execmd(cmd)
-            
-            update_rpc(state=f'Executing: {cmd}', details='Hyprx - CLI toolkit for Minecraft')
-            
-        except KeyboardInterrupt:
-            print("\nExiting...")
-            stop_rpc()
-            break
-        except EOFError:
-            stop_rpc()
-            break
+            continue
+
+        execmd(cmd)
+        update_rpc(state=f'Executing: {cmd}', details='Hyprx - CLI toolkit for Minecraft')
+
+    except KeyboardInterrupt:
+        print("\nExiting...")
+        stop_rpc()
+        break
+    except EOFError:
+        stop_rpc()
+        break
