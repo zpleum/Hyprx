@@ -47,7 +47,7 @@ The project focuses on **performance, modularity, and extensibility**, allowing 
 | ---------------- | ---------------------------------------------------------------------- |
 | Original Creator | x5ten                                                                  |
 | Original Project | Banana                                                                 |
-| Repository       | [https://github.com/Renovsk/Banana](https://github.com/Renovsk/Banana) |
+| Repository       | [https://github.com/x3fication/Banana](https://github.com/x3fication/Banana) |
 
 This project continues to be distributed under the **GNU General Public License v3.0 (GPL-3.0)**.
 
@@ -282,6 +282,13 @@ This allows the tool to handle **large scale network operations efficiently**.
 
 ---
 
+## 📜 License
+
+Based on [Banana](https://github.com/x3fication/Banana) by x5ten.
+Distributed under the **GNU General Public License v3.0** — free to use and modify, provided derivatives carry the same license and credits.
+
+---
+
 # ⚠️ Disclaimer
 
 This software is intended **strictly for educational purposes, security research, and authorized testing environments**.
@@ -292,14 +299,3 @@ By using this tool, you agree that:
 
 * you have permission to test the target systems
 * you comply with your **local cybersecurity laws**
-
----
-
-# 🖼️ Credits
-
-| Project | Author |
-| ------- | ------ |
-| Banana  | x5ten  |
-| Hyprx   | zPleum |
-
-Hyprx is a **continuation and improvement** of the **Banana** project with additional functionality and modifications.
